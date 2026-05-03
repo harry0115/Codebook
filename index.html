@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Codebook Capital | 解码科技前沿，投资智能未来</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&family=Space+Grotesk:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { background-color: #05060a; font-family: 'Inter', sans-serif; color: #eef2ff; line-height: 1.5; overflow: hidden; height: 100vh; }
+        .scroll-container { height: 100vh; overflow-y: scroll; scroll-snap-type: y mandatory; scroll-behavior: smooth; }
+        .section { scroll-snap-align: start; height: 100vh; width: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 2rem 5%; position: relative; overflow-y: auto; }
+        .scroll-container::-webkit-scrollbar { width: 5px; }
+        .scroll-container::-webkit-scrollbar-track { background: #0f1117; }
+        .scroll-container::-webkit-scrollbar-thumb { background: #2d3a5e; border-radius: 8px; }
+        .glass-panel { background: rgba(12, 16, 24, 0.6); backdrop-filter: blur(12px); border: 1px solid rgba(56, 189, 248, 0.15); border-radius: 2rem; box-shadow: 0 20px 35px -12px rgba(0,0,0,0.4); }
+        .section-title { font-size: 2.4rem; font-weight: 600; letter-spacing: -0.02em; background: linear-gradient(135deg, #FFFFFF 0%, #94a3f8 80%); background-clip: text; -webkit-background-clip: text; color: transparent; margin-bottom: 1rem; }
+        .badge-glow { background: rgba(56, 189, 248, 0.1); border-left: 3px solid #38bdf8; padding: 0.2rem 1rem; border-radius: 0 20px 20px 0; font-size: 0.85rem; font-weight: 500; letter-spacing: 0.3px; color: #94a3f8; margin-bottom: 1.5rem; }
+        .card-hover { transition: all 0.3s ease; background: rgba(15, 20, 30, 0.5); border: 1px solid rgba(56, 189, 248, 0.1); border-radius: 1.75rem; padding: 1.8rem; }
+        .card-hover:hover { border-color: rgba(56, 189, 248, 0.4); transform: translateY(-4px); background: rgba(20, 26, 38, 0.7); box-shadow: 0 20px 30px -15px rgba(0, 0, 0, 0.5); }
+        .btn-primary { background: linear-gradient(105deg, #1e293b 0%, #0f172a 100%); border: 1px solid rgba(56, 189, 248, 0.5); color: white; font-weight: 500; padding: 0.8rem 2rem; border-radius: 3rem; transition: all 0.2s; cursor: pointer; font-family: 'Inter', sans-serif; }
+        .btn-primary:hover { background: linear-gradient(105deg, #2d3a5e 0%, #1e293b 100%); border-color: #38bdf8; box-shadow: 0 0 12px rgba(56, 189, 248, 0.3); transform: scale(1.02); }
+        .grid-3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1.8rem; width: 100%; margin-top: 2rem; }
+        .grid-2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 2rem; width: 100%; margin-top: 2rem; }
+        .content-wrapper { max-width: 1300px; width: 100%; margin: 0 auto; }
+        .fixed-nav { position: fixed; top: 0; left: 0; width: 100%; display: flex; justify-content: space-between; align-items: center; padding: 1.2rem 5%; z-index: 100; background: rgba(5, 6, 10, 0.7); backdrop-filter: blur(10px); border-bottom: 1px solid rgba(56, 189, 248, 0.1); }
+        .scroll-hint { position: absolute; bottom: 25px; left: 50%; transform: translateX(-50%); animation: bounce 1.8s infinite; color: #38bdf8; font-size: 1.2rem; opacity: 0.7; cursor: pointer; }
+        @keyframes bounce { 0%, 100% { transform: translateX(-50%) translateY(0); opacity: 0.5; } 50% { transform: translateX(-50%) translateY(10px); opacity: 1; } }
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.85); backdrop-filter: blur(8px); z-index: 1000; justify-content: center; align-items: center; }
+        .modal-content { max-width: 550px; width: 90%; background: #0b0f17; border: 1px solid rgba(56,189,248,0.4); border-radius: 2rem; padding: 2rem; box-shadow: 0 30px 40px -20px black; animation: fadeUp 0.25s ease; }
+        @keyframes fadeUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        .close-modal { float: right; font-size: 1.8rem; cursor: pointer; color: #94a3f8; transition: 0.2s; }
+        .close-modal:hover { color: #f87171; }
+        .input-field { background: rgba(0, 0, 0, 0.5); border: 1px solid #2d3a5e; border-radius: 1.2rem; padding: 0.8rem 1.2rem; color: #f0f4ff; font-family: 'Inter', sans-serif; transition: all 0.2s; width: 100%; }
+        .input-field:focus { outline: none; border-color: #38bdf8; box-shadow: 0 0 0 2px rgba(56, 189, 248, 0.2); }
+        .input-field::placeholder { color: #5f6f96; }
+        .copyright { text-align: center; margin-top: 2.5rem; font-size: 0.75rem; color: #4a5568; letter-spacing: 0.3px; }
+        @media (max-width: 768px) { .section-title { font-size: 1.8rem; } .hero-title { font-size: 2.2rem; } .grid-3, .grid-2 { grid-template-columns: 1fr; gap: 1rem; } .copyright { margin-top: 1.5rem; } }
+    </style>
+</head>
+<body>
+
+<div class="fixed-nav">
+    <div style="font-weight: 700; font-size: 1.5rem; letter-spacing: -0.02em; background: linear-gradient(135deg,#fff,#38bdf8); -webkit-background-clip:text; background-clip:text; color:transparent;">CODEBOOK <span style="color:#38bdf8;">CAPITAL</span></div>
+    <button class="btn-primary" id="globalContactBtn"><i class="fas fa-comment-dots"></i> 联系我们</button>
+</div>
+
+<div class="scroll-container" id="scrollContainer">
+    <!-- 第1屏：整体介绍 -->
+    <section class="section">
+        <div class="content-wrapper" style="text-align: center;">
+            <div class="glass-panel" style="padding: 2.5rem 2rem; max-width: 1000px; margin: 0 auto;">
+                <h1 class="hero-title" style="font-size: 3.5rem; font-weight: 700; letter-spacing: -0.02em; line-height: 1.2;">解码科技前沿，<br>投资智能未来。</h1>
+                <div style="height: 2px; width: 80px; background: linear-gradient(90deg,#38bdf8,transparent); margin: 1.5rem auto;"></div>
+                <p style="font-size: 1.2rem; color: #cbd5f0; max-width: 700px; margin: 0 auto;">Codebook Capital Limited 是一家深耕全球科技前沿、深度聚焦人工智能全产业链投资，并专注挖掘中国智造潜力的领先私募股权投资机构。</p>
+                <p style="margin-top: 1.5rem; font-size: 1rem; color: #94a3b8;">在充满噪音与不确定性的科技浪潮中，我们不只是资本的注入者，更是复杂趋势的 <strong style="color:#38bdf8;">“首席解码官”</strong>。</p>
+            </div>
+            <div class="scroll-hint" id="scrollHint1"><i class="fas fa-chevron-down"></i></div>
+        </div>
+    </section>
+
+    <!-- 第2屏：WHO ARE WE -->
+    <section class="section">
+        <div class="content-wrapper">
+            <div class="badge-glow">WHO WE ARE</div>
+            <p style="font-size: 1.1rem; margin-bottom: 1rem; max-width: 900px;">我们致力于在纷繁的数字变量中，破译出最具增长确定性的 <strong>价值密码</strong>。在布局中国高科技赛道时，始终秉持“解码未来、重构价值”的底层逻辑：</p>
+            <div class="grid-3">
+                <div class="card-hover"><div style="font-size: 2rem;">🔓</div><h3>深度破译 <span style="font-size:0.8rem; font-weight:normal;">Deciphering</span></h3><p>像解析底层代码一样，穿透技术表象，直达算力架构、底层协议与核心算法的本质，精准识别颠覆性机会。</p></div>
+                <div class="card-hover"><div style="font-size: 2rem;">🏗️</div><h3>结构重塑 <span style="font-size:0.8rem; font-weight:normal;">Structuring</span></h3><p>不仅投入资本，更通过全产业链资源整合，构建稳固的商业架构，协助创业者打通价值转化路径，实现增长确定性。</p></div>
+                <div class="card-hover"><div style="font-size: 2rem;">⚡</div><h3>范式演进 <span style="font-size:0.8rem; font-weight:normal;">Paradigm Shift</span></h3><p>捕捉并催化推动技术向产业跃迁的核心力量，见证科技生产力从底层逻辑走向系统落地，凝聚中国智造能力。</p></div>
+            </div>
+            <div class="scroll-hint" id="scrollHint2"><i class="fas fa-chevron-down"></i></div>
+        </div>
+    </section>
+
+    <!-- 第3屏：TEAM DNA + 版权 -->
+    <section class="section">
+        <div class="content-wrapper">
+            <div class="badge-glow">TEAM DNA</div>
+            <h2 class="section-title">产业深耕，价值共生</h2>
+            <p style="max-width: 800px; margin-bottom: 1.5rem;">Codebook Capital 的核心团队深耕于中国顶级 AI 产业资本（CVC）及头部私募股权基金。不仅是资本的驱动者，更是技术趋势的瞭望者与产业实践的参与者。</p>
+            <div class="grid-2">
+                <div class="card-hover"><i class="fas fa-microchip" style="font-size:2rem; color:#38bdf8;"></i><h3>产业 DNA</h3><p>团队成员主导并管理过多支产业基金，累计投资金额超过100亿元，覆盖 AI 芯片、具身智能、AI Agent等核心赛道，具备从底层算力到商业化落地的全栈式视野。</p></div>
+                <div class="card-hover"><i class="fas fa-chart-line" style="font-size:2rem; color:#38bdf8;"></i><h3>核心版图</h3><p>投资足迹覆盖 AI 产业链关键节点——从底层芯片与算力，到中间层模型与工具链，再到上层应用与智能终端。始终与行业最敏锐的头脑并肩前行。</p></div>
+                <div class="card-hover"><i class="fas fa-handshake" style="font-size:2rem; color:#38bdf8;"></i><h3>赋能优势</h3><p>凭借深厚产业背景，为被投企业提供超越资本的战略价值，包括上下游供应链资源对接，以及核心应用场景商业化落地的深度支持。</p></div>
+            </div>
+            <p style="text-align: center; margin-top: 2rem; color: #6c86a3; font-size: 0.85rem;"><i class="fas fa-envelope"></i> 与我们探讨合作 — 点击右上角「联系我们」</p>
+            <!-- 底部版权信息，明确添加 -->
+            <div class="copyright">© 2026 Codebook Capital Limited — 解码未来，重构价值</div>
+        </div>
+    </section>
+</div>
+
+<!-- 联系模态窗 -->
+<div id="contactModal" class="modal">
+    <div class="modal-content">
+        <span class="close-modal" id="closeModalBtn">&times;</span>
+        <h2>留言给我们</h2>
+        <p>我们会尽快与您取得联系</p>
+        <form id="contactForm">
+            <input type="text" id="name" placeholder="姓名 / Name" class="input-field" required>
+            <input type="email" id="email" placeholder="邮箱 / Email" class="input-field" required>
+            <textarea id="message" rows="4" placeholder="留言内容 / Message" class="input-field" required></textarea>
+            <label><i class="fas fa-paperclip"></i> 附件 (可选，支持图片/PDF/文档)</label>
+            <input type="file" id="attachment" class="input-field">
+            <small>最大2MB</small>
+            <div id="formStatus"></div>
+            <button type="submit" class="btn-primary" id="submitBtn">发送留言 <i class="fas fa-arrow-right"></i></button>
+        </form>
+        <p>通过此表单，信息将被安全转发至 Codebook 官方联系通道。</p>
+    </div>
+</div>
+
+<script>
+    const container = document.getElementById('scrollContainer');
+    const sections = document.querySelectorAll('.section');
+    function scrollToNext() {
+        const sh = window.innerHeight;
+        const idx = Math.floor(container.scrollTop / sh);
+        if (idx + 1 < sections.length) container.scrollTo({ top: (idx+1)*sh, behavior: 'smooth' });
+    }
+    document.getElementById('scrollHint1')?.addEventListener('click', scrollToNext);
+    document.getElementById('scrollHint2')?.addEventListener('click', scrollToNext);
+    
+    const modal = document.getElementById('contactModal');
+    const openBtn = document.getElementById('globalContactBtn');
+    const closeBtn = document.getElementById('closeModalBtn');
+    openBtn.onclick = () => modal.style.display = 'flex';
+    closeBtn.onclick = () => modal.style.display = 'none';
+    window.onclick = e => { if (e.target === modal) modal.style.display = 'none'; };
+    
+    const WEB3FORMS_ACCESS_KEY = "YOUR_ACCESS_KEY";
+    const form = document.getElementById('contactForm');
+    const statusDiv = document.getElementById('formStatus');
+    form.onsubmit = async (e) => {
+        e.preventDefault();
+        const name = document.getElementById('name').value.trim();
+        const email = document.getElementById('email').value.trim();
+        const msg = document.getElementById('message').value.trim();
+        const file = document.getElementById('attachment').files[0];
+        if (!name || !email || !msg) {
+            statusDiv.style.color = "#f87171";
+            statusDiv.innerHTML = "请完整填写姓名、邮箱及留言内容。";
+            return;
+        }
+        if (WEB3FORMS_ACCESS_KEY === "YOUR_ACCESS_KEY") {
+            statusDiv.style.color = "#facc15";
+            statusDiv.innerHTML = "⚠️ 邮件服务需配置：请在 web3forms.com 注册并替换 YOUR_ACCESS_KEY。";
+            return;
+        }
+        const fd = new FormData();
+        fd.append("access_key", WEB3FORMS_ACCESS_KEY);
+        fd.append("name", name); fd.append("email", email); fd.append("message", msg);
+        if (file && file.size <= 2*1024*1024) fd.append("attachment", file);
+        fd.append("botcheck", "");
+        const btn = document.getElementById('submitBtn');
+        const orig = btn.innerHTML;
+        btn.disabled = true; btn.innerHTML = '<i class="fas fa-spinner fa-pulse"></i> 发送中...';
+        try {
+            const res = await fetch("https://api.web3forms.com/submit", { method: "POST", body: fd });
+            const json = await res.json();
+            if (json.success) {
+                statusDiv.style.color = "#4ade80";
+                statusDiv.innerHTML = "✓ 留言已成功发送！";
+                form.reset();
+                setTimeout(() => modal.style.display = 'none', 1500);
+            } else throw new Error(json.message);
+        } catch (err) {
+            statusDiv.style.color = "#f87171";
+            statusDiv.innerHTML = "发送失败，请稍后再试。";
+        } finally {
+            btn.disabled = false; btn.innerHTML = orig;
+        }
+    };
+    if (WEB3FORMS_ACCESS_KEY === "YOUR_ACCESS_KEY") console.log("请配置 Web3Forms Access Key 以启用邮件转发");
+</script>
+</body>
+</html>
