@@ -86,7 +86,6 @@
                 <div class="card-hover"><i class="fas fa-handshake" style="font-size:2rem; color:#38bdf8;"></i><h3>赋能优势</h3><p>凭借深厚产业背景，为被投企业提供超越资本的战略价值，包括上下游供应链资源对接，以及核心应用场景商业化落地的深度支持。</p></div>
             </div>
             <p style="text-align: center; margin-top: 2rem; color: #6c86a3; font-size: 0.85rem;"><i class="fas fa-envelope"></i> 与我们探讨合作 — 点击右上角「联系我们」</p>
-            <!-- 底部版权信息，明确添加 -->
             <div class="copyright">© 2026 Codebook Capital Limited — 解码未来，重构价值</div>
         </div>
     </section>
@@ -99,12 +98,16 @@
         <h2>留言给我们</h2>
         <p>我们会尽快与您取得联系</p>
         <form id="contactForm">
-            <input type="text" id="name" placeholder="姓名 / Name" class="input-field" required>
-            <input type="email" id="email" placeholder="邮箱 / Email" class="input-field" required>
-            <textarea id="message" rows="4" placeholder="留言内容 / Message" class="input-field" required></textarea>
+            <!-- Web3Forms Access Key（已配置） -->
+            <input type="hidden" name="access_key" value="fb57020e-273f-4ab4-a1ba-022af36cc9cd">
+            <!-- 可选：自定义邮件主题 -->
+            <input type="hidden" name="subject" value="来自 Codebook Capital 官网的新留言">
+            <input type="text" name="name" placeholder="姓名 / Name" class="input-field" required>
+            <input type="email" name="email" placeholder="邮箱 / Email" class="input-field" required>
+            <textarea name="message" rows="4" placeholder="留言内容 / Message" class="input-field" required></textarea>
             <label><i class="fas fa-paperclip"></i> 附件 (可选，支持图片/PDF/文档)</label>
-            <input type="file" id="attachment" class="input-field">
-            <small>最大2MB</small>
+            <input type="file" name="attachment" class="input-field">
+            <small>最大2MB (免费限制)</small>
             <div id="formStatus"></div>
             <button type="submit" class="btn-primary" id="submitBtn">发送留言 <i class="fas fa-arrow-right"></i></button>
         </form>
@@ -113,6 +116,7 @@
 </div>
 
 <script>
+    // 全屏滚动
     const container = document.getElementById('scrollContainer');
     const sections = document.querySelectorAll('.section');
     function scrollToNext() {
@@ -123,6 +127,7 @@
     document.getElementById('scrollHint1')?.addEventListener('click', scrollToNext);
     document.getElementById('scrollHint2')?.addEventListener('click', scrollToNext);
     
+    // 模态窗逻辑
     const modal = document.getElementById('contactModal');
     const openBtn = document.getElementById('globalContactBtn');
     const closeBtn = document.getElementById('closeModalBtn');
@@ -130,50 +135,76 @@
     closeBtn.onclick = () => modal.style.display = 'none';
     window.onclick = e => { if (e.target === modal) modal.style.display = 'none'; };
     
-    const WEB3FORMS_ACCESS_KEY = "YOUR_ACCESS_KEY";
+    // Web3Forms 提交（已使用用户提供的 Access Key）
     const form = document.getElementById('contactForm');
     const statusDiv = document.getElementById('formStatus');
     form.onsubmit = async (e) => {
         e.preventDefault();
-        const name = document.getElementById('name').value.trim();
-        const email = document.getElementById('email').value.trim();
-        const msg = document.getElementById('message').value.trim();
-        const file = document.getElementById('attachment').files[0];
-        if (!name || !email || !msg) {
+        const submitBtn = document.getElementById('submitBtn');
+        const originalText = submitBtn.innerHTML;
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = '<i class="fas fa-spinner fa-pulse"></i> 发送中...';
+        statusDiv.style.color = "#94a3b8";
+        statusDiv.innerHTML = "正在安全提交...";
+        
+        const name = document.querySelector('input[name="name"]').value.trim();
+        const email = document.querySelector('input[name="email"]').value.trim();
+        const message = document.querySelector('textarea[name="message"]').value.trim();
+        const fileInput = document.querySelector('input[name="attachment"]');
+        const file = fileInput.files[0];
+        
+        if (!name || !email || !message) {
             statusDiv.style.color = "#f87171";
             statusDiv.innerHTML = "请完整填写姓名、邮箱及留言内容。";
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = originalText;
             return;
         }
-        if (WEB3FORMS_ACCESS_KEY === "YOUR_ACCESS_KEY") {
-            statusDiv.style.color = "#facc15";
-            statusDiv.innerHTML = "⚠️ 邮件服务需配置：请在 web3forms.com 注册并替换 YOUR_ACCESS_KEY。";
-            return;
+        
+        const formData = new FormData();
+        formData.append("access_key", "fb57020e-273f-4ab4-a1ba-022af36cc9cd");
+        formData.append("name", name);
+        formData.append("email", email);
+        formData.append("message", message);
+        formData.append("subject", "来自 Codebook Capital 官网的新留言");
+        if (file) {
+            if (file.size > 2 * 1024 * 1024) {
+                statusDiv.style.color = "#f87171";
+                statusDiv.innerHTML = "附件大小不能超过 2MB，请压缩后重试。";
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = originalText;
+                return;
+            }
+            formData.append("attachment", file);
         }
-        const fd = new FormData();
-        fd.append("access_key", WEB3FORMS_ACCESS_KEY);
-        fd.append("name", name); fd.append("email", email); fd.append("message", msg);
-        if (file && file.size <= 2*1024*1024) fd.append("attachment", file);
-        fd.append("botcheck", "");
-        const btn = document.getElementById('submitBtn');
-        const orig = btn.innerHTML;
-        btn.disabled = true; btn.innerHTML = '<i class="fas fa-spinner fa-pulse"></i> 发送中...';
+        formData.append("botcheck", "");
+        
         try {
-            const res = await fetch("https://api.web3forms.com/submit", { method: "POST", body: fd });
-            const json = await res.json();
-            if (json.success) {
+            const response = await fetch("https://api.web3forms.com/submit", {
+                method: "POST",
+                body: formData
+            });
+            const result = await response.json();
+            if (result.success) {
                 statusDiv.style.color = "#4ade80";
-                statusDiv.innerHTML = "✓ 留言已成功发送！";
+                statusDiv.innerHTML = "✓ 留言已成功发送！我们会尽快回复您。";
                 form.reset();
-                setTimeout(() => modal.style.display = 'none', 1500);
-            } else throw new Error(json.message);
-        } catch (err) {
+                setTimeout(() => {
+                    modal.style.display = 'none';
+                    statusDiv.innerHTML = "";
+                }, 2000);
+            } else {
+                throw new Error(result.message || "发送失败");
+            }
+        } catch (error) {
+            console.error(error);
             statusDiv.style.color = "#f87171";
-            statusDiv.innerHTML = "发送失败，请稍后再试。";
+            statusDiv.innerHTML = "发送失败，请稍后再试或直接联系官方渠道。";
         } finally {
-            btn.disabled = false; btn.innerHTML = orig;
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = originalText;
         }
     };
-    if (WEB3FORMS_ACCESS_KEY === "YOUR_ACCESS_KEY") console.log("请配置 Web3Forms Access Key 以启用邮件转发");
 </script>
 </body>
 </html>
