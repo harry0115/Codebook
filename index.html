@@ -102,12 +102,10 @@
             <input type="hidden" name="access_key" value="fb57020e-273f-4ab4-a1ba-022af36cc9cd">
             <!-- 可选：自定义邮件主题 -->
             <input type="hidden" name="subject" value="来自 Codebook Capital 官网的新留言">
+            <!-- 已移除附件上传功能 -->
             <input type="text" name="name" placeholder="姓名 / Name" class="input-field" required>
             <input type="email" name="email" placeholder="邮箱 / Email" class="input-field" required>
             <textarea name="message" rows="4" placeholder="留言内容 / Message" class="input-field" required></textarea>
-            <label><i class="fas fa-paperclip"></i> 附件 (可选，支持图片/PDF/文档)</label>
-            <input type="file" name="attachment" class="input-field">
-            <small>最大2MB (免费限制)</small>
             <div id="formStatus"></div>
             <button type="submit" class="btn-primary" id="submitBtn">发送留言 <i class="fas fa-arrow-right"></i></button>
         </form>
@@ -135,7 +133,7 @@
     closeBtn.onclick = () => modal.style.display = 'none';
     window.onclick = e => { if (e.target === modal) modal.style.display = 'none'; };
     
-    // Web3Forms 提交（已使用用户提供的 Access Key）
+    // Web3Forms 提交
     const form = document.getElementById('contactForm');
     const statusDiv = document.getElementById('formStatus');
     form.onsubmit = async (e) => {
@@ -150,8 +148,6 @@
         const name = document.querySelector('input[name="name"]').value.trim();
         const email = document.querySelector('input[name="email"]').value.trim();
         const message = document.querySelector('textarea[name="message"]').value.trim();
-        const fileInput = document.querySelector('input[name="attachment"]');
-        const file = fileInput.files[0];
         
         if (!name || !email || !message) {
             statusDiv.style.color = "#f87171";
@@ -167,16 +163,6 @@
         formData.append("email", email);
         formData.append("message", message);
         formData.append("subject", "来自 Codebook Capital 官网的新留言");
-        if (file) {
-            if (file.size > 2 * 1024 * 1024) {
-                statusDiv.style.color = "#f87171";
-                statusDiv.innerHTML = "附件大小不能超过 2MB，请压缩后重试。";
-                submitBtn.disabled = false;
-                submitBtn.innerHTML = originalText;
-                return;
-            }
-            formData.append("attachment", file);
-        }
         formData.append("botcheck", "");
         
         try {
